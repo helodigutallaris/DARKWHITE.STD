@@ -89,7 +89,15 @@ async function authAction(kind){
  status("authStatus","");
  const email=$("email").value.trim(),password=$("password").value;
  if(!email||password.length<6){status("authStatus","Masukkan email dan kata sandi minimal 6 karakter.");return}
- const result=kind==="signup"?await supabase.auth.signUp({email,password}):await supabase.auth.signInWithPassword({email,password});
+ const result=kind==="signup"
+  ? await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: "https://helodigutallaris.github.io/RUANG-UANG/"
+      }
+    })
+  : await supabase.auth.signInWithPassword({email,password});
  if(result.error){status("authStatus",result.error.message);return}
  if(kind==="signup"&&!result.data.session){status("authStatus","Akun dibuat. Periksa email untuk konfirmasi, lalu masuk.");return}
  if(result.data.user){user=result.data.user;await loadUserData()}
